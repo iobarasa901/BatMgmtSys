@@ -1,0 +1,138 @@
+#include "../Headers/AdminHeader.h"
+#include <iostream>
+
+bool SaveToDB_Admin(std::map<std::string, Admin>& Data){ //Same logic as the SaveToDB_Battery
+    std::ofstream outFile;
+
+    remove(ADMIN_DB);
+    outFile.open(ADMIN_DB);
+
+    for (const auto& each : Data){
+        outFile << each.second.Username << ' ' 
+                << each.second.Password << ' '
+                << '\n';
+    }
+
+    outFile.close();
+
+    return true;
+}
+
+std::map<std::string, Admin> LoadAdminData(){ //Same logic as loading battery data
+    std::map<std::string, Admin> AdminData;
+
+    std::ifstream AdminDB;
+    AdminDB.open(ADMIN_DB);
+
+    std::string line;
+
+    while (std::getline(AdminDB, line)){
+        std::istringstream data(line);
+
+        std::string Username, Password;
+
+        if(!(data >> Username >> Password)){continue;} //To ignore all malformed lines
+
+        Admin tempAdmin = {Username, Password};
+        AdminData[Username] = tempAdmin;
+    }
+
+    AdminDB.close();
+
+    return AdminData;
+}
+
+bool AdminVerification(std::string& name, std::string& pass, std::map<std::string, Admin>& map){ //Logic to verify user
+    if (map[name].Password == pass){
+        return true;
+    }else{
+        return false;
+    }
+};
+
+bool isValidSelectionAdmin(int selection){ //This is local
+    if (selection >= 1 & selection <= 4){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+// Main Login Screen
+void AdminLogin(){
+    std::cout << "=== Loading Admin Data ===" << std::endl;
+    std::map<std::string, Admin> AdminData = LoadAdminData();
+    std::cout << "=== Finished Loading Admin Data ===" << std::endl;
+
+    std::string searchName,searchPass;
+
+    std::cout << "========================" << std::endl
+              << "Login in as Driver Below" << std::endl
+              << "========================" << std::endl
+              << std::endl
+              << "Enter username: ";
+    std::cin >> searchName;
+    std::cout << "Enter Password: ";
+    std::cin >> searchPass;
+
+    while (!AdminVerification(searchName, searchPass, AdminData)){ //Check for credentials 
+        std::cin.clear();
+        std::cin.ignore(10000, '\n');
+        std::cout << "Invalid Credentials. Try again";
+        std::cout << "Enter Username: "; std::cin >> searchName;
+        std::cout << "Enter Password: "; std::cin >> searchPass;
+    }
+
+    AdminScreen(searchName);
+}
+
+//Admin Dashboard
+void AdminScreen(std::string& name){
+    int selection;
+
+    bool running = true; //To keep user in the dashboard until they decide to exit
+
+    while(running){
+        std::cout << std::endl
+                << "========================" << std::endl
+                << "Welcome " << name << std::endl
+                << "========================" << std::endl
+                << "Select an option to proceed with." << std::endl
+                << std::endl
+                << "1. Driver registration" << std::endl
+                << "2. Admin registration" << std::endl
+                << "3. Battery Management" << std::endl
+                << "4. Sign Out" << std::endl
+                << std::endl;
+
+        while(!(std::cin >> selection)){ //If user puts in a non-number
+                std::cin.clear(); 
+                std::cin.ignore(10000, '\n'); //Clear input buffer
+                std::cout << "Please enter a number. Try again: ";
+            }
+
+        while(!isValidSelectionAdmin(selection)){ //If use puts in a number thats not in range
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
+            std::cout << "Invalid Selection. Try again: "; std::cin >> selection;
+        }
+
+        switch(selection){
+            case 1:
+                //Open Driver Registration Screen
+                break;
+            case 2:
+                //Open Admin Registration Screen
+                break;
+            case 3:
+                //Open Battery Mgmt for Admins
+                break;
+            case 4:
+                running = false;
+                break; //Terminate the app
+        }
+
+        running = false;
+    }
+
+}

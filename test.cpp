@@ -1,4 +1,6 @@
-#include "Structs_and_Maps.h"
+#include "Headers/DriverHeader.h"
+#include "Headers/AdminHeader.h"
+#include "Headers/BatteryHeader.h"
 #include <iostream>
 #include <random>
 #include <cstdlib>
