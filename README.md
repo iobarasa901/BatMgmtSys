@@ -1,2 +1,2 @@
 # BatMgmtSys
-C++ Battery Managemnt System
+C++ Battery Management System
