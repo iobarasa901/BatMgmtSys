@@ -2,7 +2,7 @@
 #include "../Headers/DriverHeader.h"
 #include <iostream>
 
-bool SaveToDB_Admin(const std::map<std::string, Admin>& Data){ //Same logic as the SaveToDB_Battery
+bool SaveToDB_Admin(std::map<std::string, Admin>& Data){ //Same logic as the SaveToDB_Battery
     std::ofstream outFile;
 
     remove(ADMIN_DB);

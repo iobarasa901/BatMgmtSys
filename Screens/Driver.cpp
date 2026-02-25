@@ -1,5 +1,7 @@
 #include "../Headers/DriverHeader.h"
+#include "../Headers/BatteryHeader.h"
 #include <iostream>
+#include <limits>
 
 //Function to load and return a map for the full database.
 std::map<std::string, Driver> LoadDriverData(){//same logic as loading battery data
@@ -127,6 +129,119 @@ void DriverScreen(std::string& name){
             case 3:
                 running = false;
                 break; //Terminate the screen
+        }
+    }
+}
+
+// ===== Input Helpers =====
+
+void clearInput(){
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
+void pause(){
+    std::cout << "Press Enter to continue...";
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
+int promptInt(const std::string &msg){
+    int v;
+    while (true){
+        std::cout << msg;
+        if (std::cin >> v){ 
+            clearInput(); 
+            return v; 
+        }
+        std::cout << "Invalid integer. Try again.\n";
+        clearInput();
+    }
+}
+
+float promptFloat(const std::string &msg){
+    float v;
+    while (true){
+        std::cout << msg;
+        if (std::cin >> v){ 
+            clearInput(); 
+            return v; 
+        }
+        std::cout << "Invalid number. Try again.\n";
+        clearInput();
+    }
+}
+
+void showBattery(const Battery &b){
+    std::cout << "ID:" << b.ID << " Type:" << b.Type 
+         << " SoC:" << b.SoC << " SoH:" << b.SoH 
+         << " Status:" << b.Status << '\n';
+}
+
+// ===== Driver Dashboard =====
+
+void driverDashboard(std::map<std::string, Driver>& drivers, std::map<int, Battery>& batteries, Driver &me){
+    while (true){
+        std::cout << "\n========== Driver Dashboard ==========\n";
+        std::cout << "User: " << me.Username << " | Credits: " << me.Credits << "\n";
+        std::cout << "1) View low batteries (SoC < 30%)\n";
+        std::cout << "2) Swap battery\n";
+        std::cout << "3) Deposit credits\n";
+        std::cout << "4) Show balance\n";
+        std::cout << "5) Sign out\n";
+        int choice = promptInt("Choose: ");
+
+        if (choice == 1){
+            std::cout << "\n--- Low Battery List (SoC < 30) ---\n";
+            bool found = false;
+            for (const auto &p : batteries){
+                if (p.second.SoC < 30.0f){ 
+                    showBattery(p.second);
+                    found = true;
+                }
+            }
+            if (!found) std::cout << "No low batteries.\n";
+            pause();
+
+        } else if (choice == 2){
+            int id = promptInt("Enter battery ID to swap: ");
+            auto it = batteries.find(id);
+            if (it == batteries.end()){ 
+                std::cout << "Battery not found.\n"; 
+            } else {
+                // Toggle between Available and InUse
+                if (it->second.Status == "Available"){
+                    it->second.Status = "InUse";
+                    std::cout << "Battery " << id << " marked as InUse.\n";
+                } else {
+                    it->second.Status = "Available";
+                    std::cout << "Battery " << id << " marked as Available.\n";
+                }
+                SaveToDB_Battery(batteries);
+            }
+            pause();
+
+        } else if (choice == 3){
+            float amt = promptFloat("Amount to deposit: ");
+            if (amt > 0){ 
+                me.Credits += amt; 
+                drivers[me.Username] = me;  // Update map
+                SaveToDB_Driver(drivers);    // Save to file
+                std::cout << "Deposited $" << amt << ". New balance: " << me.Credits << "\n"; 
+            } else {
+                std::cout << "Must deposit positive amount.\n";
+            }
+            pause();
+
+        } else if (choice == 4){
+            std::cout << "Your current balance: $" << me.Credits << "\n";
+            pause();
+
+        } else if (choice == 5){
+            std::cout << "Signing out...\n";
+            break;  // Exit loop, return to main menu
+
+        } else {
+            std::cout << "Invalid option.\n";
         }
     }
 }

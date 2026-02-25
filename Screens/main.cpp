@@ -5,11 +5,15 @@
 
 bool isValidSelection(int selection);
 void HandleDriverLogin();
+void initializeData();
+void driverDashboard(std::map<std::string, Driver>&, std::map<int, Battery>&, Driver&);
 
 int main(){
     int selection;
 
     bool running = true;
+
+    initializeData();
 
     while(running){
         std::cout << "================================================" << std::endl
@@ -98,8 +102,10 @@ void HandleDriverLogin() {
             std::cout << "Credits: $" << it->second.Credits << std::endl;
             std::cout << "================================\n" << std::endl;
             
-            // NEXT STEP: Call your Battery Swap Menu here
-            // OpenSwapMenu(it->second); 
+            // Call the driver dashboard
+            std::map<int, Battery> batteries = LoadBatteryData();
+            std::map<std::string, Driver> drivers = LoadDriverData();
+            driverDashboard(drivers, batteries, it->second); 
         } else {
             std::cout << "Login Failed: Incorrect password." << std::endl;
         }
