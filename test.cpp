@@ -1,3 +1,5 @@
+//Everything in this file is temporary and for testing purposes only
+
 #include "Headers/DriverHeader.h"
 #include "Headers/AdminHeader.h"
 #include "Headers/BatteryHeader.h"

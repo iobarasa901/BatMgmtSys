@@ -1,4 +1,5 @@
 #include "../Headers/AdminHeader.h"
+#include "../Headers/DriverHeader.h"
 #include <iostream>
 
 bool SaveToDB_Admin(const std::map<std::string, Admin>& Data){ //Same logic as the SaveToDB_Battery
@@ -63,6 +64,61 @@ bool isValidSelectionAdmin(int selection){ //This is local
     }
 }
 
+void DriverRegistration(){
+    std::string newName, newPass;
+
+    std::cout << "========================" << std::endl
+              << "Registering new Driver" << std::endl
+              << "========================" << std::endl
+              << "Enter the unique username of the new driver: "; std::cin >> newName;
+    std::cout << "Enter the password for the new driver: "; std::cin >> newPass;
+
+    std::map<std::string, Driver> DriverData = LoadDriverData();
+
+    if (DriverData.count(newName) > 0){ //To check if the username already exists
+        std::cout << "Username Unavailable\nEnter Username again: ";std::cin >> newName;
+        std::cout << "Enter the password for the new driver"; std::cin >> newPass;
+    }
+
+    std::cout << "Saving Driver Information\n";
+    Driver tempDriver = {newName, newPass, 0.0};
+
+    DriverData[newName] = tempDriver;
+    if(!SaveToDB_Driver(DriverData)){
+        std::cout << "Failed to save to database\n";
+    }
+}
+
+void AdminRegistration(){
+    std::string newName, newPass;
+
+    std::cout << "========================" << std::endl
+              << "Registering new Admin" << std::endl
+              << "========================" << std::endl
+              << "Enter the unique username of the new admin: "; std::cin >> newName;
+    std::cout << "Enter the password for the new admin"; std::cin >> newPass;
+
+    std::map<std::string, Admin> AdminData = LoadAdminData();
+
+    if (AdminData.count(newName) > 0){ //To check if the username already exists
+        std::cout << "Username Unavailable\nEnter Username again: ";std::cin >> newName;
+        std::cout << "Enter the password for the new admin: "; std::cin >> newPass;
+    }
+
+    std::cout << "Saving Admin Information\n";
+    Admin tempAdmin = {newName, newPass};
+
+    AdminData[newName] = tempAdmin;
+    if(!SaveToDB_Admin(AdminData)){
+        std::cout << "Failed to save to database\n";
+    }
+}
+
+void BatteryMgmgt(){
+    //TODO: Management screen for the admin
+
+}
+
 // Main Login Screen
 void AdminLogin(){
     std::cout << "=== Loading Admin Data ===" << std::endl;
@@ -124,20 +180,17 @@ void AdminScreen(std::string& name){
 
         switch(selection){
             case 1:
-                //Open Driver Registration Screen
+                DriverRegistration();
                 break;
             case 2:
-                //Open Admin Registration Screen
+                AdminRegistration();
                 break;
             case 3:
-                //Open Battery Mgmt for Admins
+                BatteryMgmgt();
                 break;
             case 4:
                 running = false;
                 break; //Terminate the app
         }
-
-        running = false;
     }
-
 }

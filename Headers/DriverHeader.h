@@ -17,3 +17,8 @@ std::map<std::string, Driver> LoadDriverData();
 //Function to save the map to the database
 bool SaveToDB_Driver(std::map<std::string, Driver>& Data);
 
+void DriverScreen(std::string& name);
+
+bool DriverVerification(std::string& name, std::string& pass, std::map<std::string, Driver>& map);
+
+void DriverLogin();

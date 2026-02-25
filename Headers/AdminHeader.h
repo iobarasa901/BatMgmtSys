@@ -16,6 +16,12 @@ std::map<std::string, Admin> LoadAdminData();
 //Function to save the map to the database
 bool SaveToDB_Admin(std::map<std::string, Admin>& Data);
 
+void DriverRegistration();
+
+void AdminRegistration();
+
+void BatteryMgmgt();
+
 void AdminScreen(std::string& name);
 
 bool AdminVerification(std::string& name, std::string& pass, std::map<std::string, Admin>& map);
