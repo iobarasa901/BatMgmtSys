@@ -20,7 +20,7 @@ void DriverRegistration();
 
 void AdminRegistration();
 
-void BatteryMgmgt();
+void BatteryMgmt();
 
 void AdminScreen(std::string& name);
 

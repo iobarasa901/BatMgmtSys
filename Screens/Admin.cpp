@@ -114,10 +114,6 @@ void AdminRegistration(){
     }
 }
 
-void BatteryMgmgt(){
-    //TODO: Management screen for the admin
-
-}
 
 // Main Login Screen
 void AdminLogin(){
@@ -128,7 +124,7 @@ void AdminLogin(){
     std::string searchName,searchPass;
 
     std::cout << "========================" << std::endl
-              << "Login in as Driver Below" << std::endl
+              << "Login in as Admin Below" << std::endl
               << "========================" << std::endl
               << std::endl
               << "Enter username: ";
@@ -139,7 +135,7 @@ void AdminLogin(){
     while (!AdminVerification(searchName, searchPass, AdminData)){ //Check for credentials 
         std::cin.clear();
         std::cin.ignore(10000, '\n');
-        std::cout << "Invalid Credentials. Try again";
+        std::cout << "Invalid Credentials. Try again\n";
         std::cout << "Enter Username: "; std::cin >> searchName;
         std::cout << "Enter Password: "; std::cin >> searchPass;
     }
@@ -186,7 +182,7 @@ void AdminScreen(std::string& name){
                 AdminRegistration();
                 break;
             case 3:
-                BatteryMgmgt();
+                BatteryMgmt();
                 break;
             case 4:
                 running = false;
