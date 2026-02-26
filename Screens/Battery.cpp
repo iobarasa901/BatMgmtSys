@@ -1,10 +1,8 @@
-#include "../Headers/BatteryHeader.h"
-#include <iomanip>
-#include <iostream>
+#include "../Headers/Helpers.h"
 
 //Function to load and return a map for the full database.
-std::map<int, Battery> LoadBatteryData(){
-    std::map<int, Battery> BatteryData;
+std::map<std::string, Battery> LoadBatteryData(){
+    std::map<std::string, Battery> BatteryData;
 
     std::ifstream batteryDB;
     batteryDB.open(BATTERY_DB);
@@ -15,7 +13,7 @@ std::map<int, Battery> LoadBatteryData(){
         std::istringstream data(line); /* converts the whole string line into a 'list' of strings. 
         e.g "1231 Li-Ion Charging" gets converted to: 1231 "Li-Ion" "Charging" */
 
-        int ID; std::string Type, Status; float SoC, SoH; //Define the variables that we want to store the broken down strings from line into
+        std::string ID; std::string Type, Status; float SoC, SoH; //Define the variables that we want to store the broken down strings from line into
 
         if(!(data >> ID >> Type >> SoC >> SoH >> Status)){continue;} //To ignore all malformed lines as well as store the data into the variables
 
@@ -23,13 +21,23 @@ std::map<int, Battery> LoadBatteryData(){
         BatteryData[ID] = tempBat; //store the battery with its key to the map
     } // go to the next line
 
+    if (BatteryData.empty()) {
+        BatteryData["1"] = {"1", "Li-Ion", 85.0f, 90.0f, "Available"};
+        BatteryData["2"] = {"2", "Li-Ion", 20.0f, 80.0f, "Available"};  // Low SoC example
+        BatteryData["3"] = {"3", "NiMH", 100.0f, 95.0f, "Charging"};
+        BatteryData["4"] = {"4", "Li-Ion", 50.0f, 85.0f, "InUse"};
+        BatteryData["5"] = {"5", "NiMH", 10.0f, 70.0f, "Available"};   // Another low SoC
+        SaveToDB_Battery(BatteryData);
+        std::cout << "Initialized 5 sample batteries\n";
+    }
+
     batteryDB.close();
 
     return BatteryData;
 }
 
 //Function to save the map to the database
-bool SaveToDB_Battery(std::map<int, Battery>& Data){
+bool SaveToDB_Battery(std::map<std::string, Battery>& Data){
     std::ofstream outFile;
 
     remove(BATTERY_DB); // delete the existing file
@@ -44,6 +52,8 @@ bool SaveToDB_Battery(std::map<int, Battery>& Data){
                 << '\n'; //end the line
     }
 
+    
+
     outFile.close();
 
     return true; // will put some logic here to only return true if the writing to the db is successful
@@ -51,7 +61,7 @@ bool SaveToDB_Battery(std::map<int, Battery>& Data){
 
 //Battery management for the admin
 void BatteryMgmt() {
-    std::map<int, Battery> batteries = LoadBatteryData();
+    std::map<std::string, Battery> BatteryData = LoadBatteryData();
 
     int choice;
     bool running = true;
@@ -76,16 +86,16 @@ void BatteryMgmt() {
 
         switch (choice) {
             case 1:
-                ViewAllBatteries(batteries);
+                ViewAllBatteries(BatteryData);
                 break;
             case 2:
-                AddNewBattery(batteries);
+                AddNewBattery(BatteryData);
                 break;
             case 3:
-                UpdateBatteryStatus(batteries);
+                UpdateBatteryStatus(BatteryData);
                 break;
             case 4:
-                MonitorBatteryHealth(batteries);
+                MonitorBatteryHealth(BatteryData);
                 break;
             case 5:
                 running = false;
@@ -97,7 +107,7 @@ void BatteryMgmt() {
 }
 
 // ── Helper: View all batteries ─────────────────────────────────────────────
-void ViewAllBatteries(std::map<int, Battery>& batteries) {
+void ViewAllBatteries(std::map<std::string, Battery>& batteries) {
     if (batteries.empty()) {
         std::cout << "No batteries in system." << std::endl;
         return;
@@ -122,9 +132,9 @@ void ViewAllBatteries(std::map<int, Battery>& batteries) {
 }
 
 // ── Helper: Add new battery ────────────────────────────────────────────────
-void AddNewBattery(std::map<int, Battery>& batteries) {
+void AddNewBattery(std::map<std::string, Battery>& batteries) {
     Battery newBattery;
-    int id;
+    std::string id;
 
     std::cout << "\n--- Add New Battery ---" << std::endl;
     std::cout << "Enter Battery ID (integer): ";
@@ -134,7 +144,7 @@ void AddNewBattery(std::map<int, Battery>& batteries) {
         std::cout << "Invalid. Enter a number: ";
     }
 
-    if (batteries.count(id)) {
+    if (batteries.count(id) > 0) {
         std::cout << "Battery ID " << id << " already exists." << std::endl;
         return;
     }
@@ -162,8 +172,8 @@ void AddNewBattery(std::map<int, Battery>& batteries) {
 }
 
 // ── Helper: Update battery status ─────────────────────────────────────────
-void UpdateBatteryStatus(std::map<int, Battery>& batteries) {
-    int id;
+void UpdateBatteryStatus(std::map<std::string, Battery>& batteries) {
+    std::string id;
     std::cout << "\n--- Update Battery Status ---" << std::endl;
     std::cout << "Enter Battery ID: ";
     std::cin >> id;
@@ -203,7 +213,7 @@ void UpdateBatteryStatus(std::map<int, Battery>& batteries) {
 }
 
 // ── Helper: Monitor SoH and flag unhealthy batteries ──────────────────────
-void MonitorBatteryHealth(std::map<int, Battery>& batteries) {
+void MonitorBatteryHealth(std::map<std::string, Battery>& batteries) {
     std::cout << "\n--- Battery Health Report (SoH < 70%) ---" << std::endl;
 
     bool anyFlagged = false;

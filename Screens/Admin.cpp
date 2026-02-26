@@ -1,6 +1,4 @@
-#include "../Headers/AdminHeader.h"
-#include "../Headers/DriverHeader.h"
-#include <iostream>
+#include "../Headers/Helpers.h"
 
 bool SaveToDB_Admin(std::map<std::string, Admin>& Data){ //Same logic as the SaveToDB_Battery
     std::ofstream outFile;
@@ -41,6 +39,13 @@ std::map<std::string, Admin> LoadAdminData(){ //Same logic as loading battery da
 
         Admin tempAdmin = {Username, Password};
         AdminData[Username] = tempAdmin;
+    }
+
+    if (AdminData.empty()) {
+        Admin defaultAdmin = {"admin", "pass"};
+        AdminData["admin"] = defaultAdmin;
+        SaveToDB_Admin(AdminData);
+        std::cout << "Initialized default admin: username 'admin', password 'pass'\n";
     }
 
     AdminDB.close();

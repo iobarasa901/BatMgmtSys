@@ -22,3 +22,7 @@ void DriverScreen(std::string& name);
 bool DriverVerification(std::string& name, std::string& pass, std::map<std::string, Driver>& map);
 
 void DriverLogin();
+
+void DriverSwapBattery();
+
+void DriverDeposit(std::string & name);
