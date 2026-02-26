@@ -3,7 +3,7 @@
 #include <sstream>
 #include <map>
 
-#define ADMIN_DB "../Database/AdminDB.txt"
+#define ADMIN_DB "Database/AdminDB.txt"
 
 struct Admin{
     std::string Username;

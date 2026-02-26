@@ -85,9 +85,9 @@ void DriverSwapBattery(){
     std::cout << "========================" << std::endl;
     
     BatteryData.erase(newBattID); BatteryData[oldBat.ID] = oldBat;
+    SaveToDB_Battery(BatteryData);
 
-    std::cout << "Replacement SUccessful" << std::endl;
-
+    std::cout << "Replacement Successful" << std::endl;
 }
 
 void DriverDeposit(std::string & name){

@@ -28,6 +28,10 @@ std::map<std::string, Admin> LoadAdminData(){ //Same logic as loading battery da
     std::ifstream AdminDB;
     AdminDB.open(ADMIN_DB);
 
+    if (!AdminDB.is_open()) {
+    std::cerr << "Error: Could not open the database file!" << std::endl;
+    }
+
     std::string line;
 
     while (std::getline(AdminDB, line)){

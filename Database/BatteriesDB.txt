@@ -1,0 +1,5 @@
+1 Li-Ion 85 90 Available 
+2 Li-Ion 20 80 Available 
+3 NiMH 100 95 Charging 
+4 Li-Ion 50 85 InUse 
+5 NiMH 10 70 Available 
