@@ -41,14 +41,3 @@ void showBattery(const Battery &b){
               << " SoC:" << b.SoC << " SoH:" << b.SoH 
               << " Status:" << b.Status << '\n';
 }
-
-std::map<std::pair<float,std::string>, Battery> SoH_Ordered_Map(){
-    std::map<std::string, Battery> NormalBatteryMap = LoadBatteryData();
-    std::map<std::pair<float,std::string>, Battery> SoH_Map;
-
-    for (const auto& each : NormalBatteryMap){
-        SoH_Map[{each.second.SoH, each.second.ID}]= each.second;
-    }
-
-    return SoH_Map;
-}

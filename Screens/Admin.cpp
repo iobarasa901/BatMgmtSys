@@ -105,7 +105,7 @@ void AdminRegistration(){
               << "Registering new Admin" << std::endl
               << "========================" << std::endl
               << "Enter the unique username of the new admin: "; std::cin >> newName;
-    std::cout << "Enter the password for the new admin"; std::cin >> newPass;
+    std::cout << "Enter the password for the new admin: "; std::cin >> newPass;
 
     std::map<std::string, Admin> AdminData = LoadAdminData();
 

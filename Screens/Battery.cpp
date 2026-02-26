@@ -67,16 +67,17 @@ void BatteryMgmt() {
     bool running = true;
 
     while (running) {
-        std::cout << "\n========================================" << std::endl;
-        std::cout << "       Battery Management (Admin)       " << std::endl;
-        std::cout << "========================================" << std::endl;
-        std::cout << "1. View All Batteries" << std::endl;
-        std::cout << "2. Add New Battery" << std::endl;
-        std::cout << "3. Update Battery Status" << std::endl;
-        std::cout << "4. Monitor Battery Health (SoH Check)" << std::endl;
-        std::cout << "5. Back" << std::endl;
-        std::cout << "----------------------------------------" << std::endl;
-        std::cout << "Select: ";
+        std::cout << "\n========================================" << std::endl
+                  << "       Battery Management (Admin)       " << std::endl
+                  << "========================================" << std::endl
+                
+                  << "1. View All Batteries" << std::endl
+                  << "2. Add New Battery" << std::endl
+                  << "3. Update Battery Status" << std::endl
+                  << "4. Monitor Battery Health (SoH Check)" << std::endl
+                  << "5. Back" << std::endl
+                  << "----------------------------------------" << std::endl
+                  << "Select: ";
 
         while (!(std::cin >> choice)) {
             std::cin.clear();
@@ -137,11 +138,11 @@ void AddNewBattery(std::map<std::string, Battery>& batteries) {
     std::string id;
 
     std::cout << "\n--- Add New Battery ---" << std::endl;
-    std::cout << "Enter Battery ID (integer): ";
+    std::cout << "Enter Battery ID: ";
     while (!(std::cin >> id)) {
         std::cin.clear();
         std::cin.ignore(10000, '\n');
-        std::cout << "Invalid. Enter a number: ";
+        std::cout << "Invalid. Enter an alphanumeric: ";
     }
 
     if (batteries.count(id) > 0) {
